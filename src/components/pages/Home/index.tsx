@@ -1,37 +1,41 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { Button } from "~/components/common/Button";
+import { MonitorModel } from "~/modules/monitor/model/monitor-model";
 import CardVideo from "./components/CardVideo";
 import { ModalCreateMonitor } from "./components/CreateMonitorModal";
-import { useSession } from "next-auth/react";
-
-interface Monitor {
-  id: number;
-  title: string;
-  url?: string;
-}
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
   const { data: session } = useSession();
-  const isAdmin = session?.user?.email === "admin@example.com";
-
-  const [monitors, setMonitors] = useState<Monitor[]>([]);
+  const [monitors, setMonitors] = useState<MonitorModel[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("monitors");
-    if (stored) setMonitors(JSON.parse(stored));
+    (async () => {
+      try {
+        const monitorsResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/monitor`
+        );
+
+        const data = (await monitorsResponse.json()) as MonitorModel[];
+
+        setMonitors(data);
+      } catch {}
+    })();
   }, []);
 
-  const handleCreateMonitor = async (name: string, url: string) => {
-    const id = Date.now();
-    const newMonitor: Monitor = { id, title: name, url };
-    const updated = [...monitors, newMonitor];
+  const isAuthenticated = session?.user;
 
-    setMonitors(updated);
-    localStorage.setItem("monitors", JSON.stringify(updated));
-
-    await fetch(`/api/stream/start?rtsp=${encodeURIComponent(url)}&id=${id}`);
+  const handleCreateMonitor = async (name: string, rtsp: string) => {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/monitor`, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        rtsp,
+      }),
+    });
   };
 
   return (
@@ -40,29 +44,19 @@ export default function Home() {
         <div className="flex w-full justify-between items-center">
           <span className="text-3xl font-bold text-green-800">Monitores</span>
 
-          {isAdmin && (
-            <button
-              onClick={() => setModalOpen(true)}
-              className="bg-green-500 hover:bg-green-500/95 text-white font-medium px-[32px] py-[10px] rounded-[8px]"
-            >
-              CRIAR MONITOR
-            </button>
+          {isAuthenticated && (
+            <Button onClick={() => setModalOpen(true)}>CRIAR MONITOR</Button>
           )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {monitors.map((monitor) => (
-            <CardVideo
-              key={monitor.id}
-              id={monitor.id}
-              title={monitor.title}
-              videoUrl={monitor.url}
-            />
+            <CardVideo key={monitor.id} monitor={monitor} />
           ))}
         </div>
       </div>
 
-      {isAdmin && (
+      {isAuthenticated && (
         <ModalCreateMonitor
           isOpen={isModalOpen}
           onRequestClose={() => setModalOpen(false)}

@@ -1,26 +1,21 @@
+import { randomUUID } from "crypto";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { env } from "~/constants/env";
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Usuário", type: "text" },
-        password: { label: "Senha", type: "password" },
+        username: { label: "username", type: "text" },
+        password: { label: "password", type: "password" },
       },
       async authorize(credentials) {
-        const { username, password } = credentials ?? {};
+        const { username, password } = credentials || {};
 
-        if (username === "admin" && password === "123456") {
-          return { id: "1", name: "Administrador", email: "admin@example.com" };
-        }
-        if (username === "admin2" && password === "123456") {
-          return {
-            id: "2",
-            name: "Administrador2",
-            email: "admin2@example.com",
-          };
+        if (username === env.USERNAME && password === env.PASSWORD) {
+          return { id: randomUUID() };
         }
 
         return null;
@@ -30,7 +25,7 @@ export const authOptions = {
   pages: {
     signIn: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

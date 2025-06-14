@@ -7,7 +7,7 @@ import { Modal } from "~/components/common/Modal";
 interface ModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  onCreateMonitor: (name: string, url: string) => void;
+  onCreateMonitor: (name: string, rtsp: string) => void;
 }
 
 export function ModalCreateMonitor({
@@ -16,13 +16,13 @@ export function ModalCreateMonitor({
   onCreateMonitor,
 }: ModalProps) {
   const [name, setName] = useState("");
-  const [url, setUrl] = useState("");
+  const [rtsp, setRtsp] = useState("");
 
   const handleCreate = () => {
-    if (name && url) {
-      onCreateMonitor(name, url);
+    if (name && rtsp) {
+      onCreateMonitor(name, rtsp);
       setName("");
-      setUrl("");
+      setRtsp("");
       onRequestClose();
     }
   };
@@ -46,8 +46,8 @@ export function ModalCreateMonitor({
           type="text"
           label="URL da câmera (RTSP)"
           placeholder="Cole a URL RTSP da câmera"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          value={rtsp}
+          onChange={(e) => setRtsp(e.target.value)}
         />
 
         <Modal.Actions>
