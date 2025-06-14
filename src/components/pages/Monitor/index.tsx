@@ -7,6 +7,7 @@ import { Button } from "~/components/common/Button";
 import { MonitorModel } from "~/modules/monitor/model/monitor-model";
 import { ModalDeleteMonitor } from "./components/DeleteMonitorModal";
 import { HLSPlayer } from "./components/HLSPlayer";
+import { useSession } from "next-auth/react";
 
 interface MonitorProps {
   id: string;
@@ -15,7 +16,10 @@ interface MonitorProps {
 export default function Monitor({ id }: MonitorProps) {
   const [monitor, setMonitor] = useState<MonitorModel>();
   const [showDelete, setShowDelete] = useState(false);
+  const { data: session } = useSession();
   const router = useRouter();
+
+  const isAuthenticated = session?.user;
 
   useEffect(() => {
     (async () => {
@@ -45,14 +49,17 @@ export default function Monitor({ id }: MonitorProps) {
       <div className="max-w-[1140px] mt-8 mx-auto">
         <div className="flex justify-between">
           <h1 className="text-2xl text-green-800 font-bold">{monitor.name}</h1>
-          <div className="flex gap-2">
-            <Button variant="edit" className="bg-blue-600 text-white">
-              EDITAR
-            </Button>
-            <Button variant="danger" onClick={() => setShowDelete(true)}>
-              DELETAR
-            </Button>
-          </div>
+
+          {isAuthenticated && (
+            <div className="flex gap-2">
+              <Button variant="edit" className="bg-blue-600 text-white">
+                EDITAR
+              </Button>
+              <Button variant="danger" onClick={() => setShowDelete(true)}>
+                DELETAR
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="relative bg-gray-800 mt-4 aspect-video rounded-lg flex items-center justify-center">

@@ -12,6 +12,8 @@ export default function Home() {
   const { data: session } = useSession();
   const [monitors, setMonitors] = useState<MonitorModel[]>([]);
 
+  const isAuthenticated = session?.user;
+
   useEffect(() => {
     (async () => {
       try {
@@ -25,8 +27,6 @@ export default function Home() {
       } catch {}
     })();
   }, []);
-
-  const isAuthenticated = session?.user;
 
   const handleCreateMonitor = async (name: string, rtsp: string) => {
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/monitor`, {
