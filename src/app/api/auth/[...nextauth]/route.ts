@@ -1,32 +1,5 @@
-import { randomUUID } from "crypto";
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { env } from "~/constants/env";
-
-export const authOptions = {
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "username", type: "text" },
-        password: { label: "password", type: "password" },
-      },
-      async authorize(credentials) {
-        const { username, password } = credentials || {};
-
-        if (username === env.USERNAME && password === env.PASSWORD) {
-          return { id: randomUUID() };
-        }
-
-        return null;
-      },
-    }),
-  ],
-  pages: {
-    signIn: "/login",
-  },
-  secret: env.NEXTAUTH_SECRET,
-};
+import { authOptions } from "~/constants/auth-options";
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
