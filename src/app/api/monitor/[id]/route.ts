@@ -13,8 +13,6 @@ export async function GET(
 ) {
   const id = (await params).id;
 
-  console.log(id);
-
   const monitor = await monitorRepository.find(id);
 
   return new Response(JSON.stringify(monitor), {

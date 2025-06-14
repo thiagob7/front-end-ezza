@@ -58,7 +58,7 @@ export default function Monitor({ id }: MonitorProps) {
         <div className="relative bg-gray-800 mt-4 aspect-video rounded-lg flex items-center justify-center">
           {monitor.status === "ONLINE" && <AoVivo />}
 
-          <HLSPlayer src={`/streams/${monitor.id}/index.m3u8`} />
+          <HLSPlayer src={`/api/stream/${id}/index.m3u8`} />
         </div>
 
         <ModalDeleteMonitor

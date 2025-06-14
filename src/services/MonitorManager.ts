@@ -19,7 +19,7 @@ export class MonitorManager {
 
   async startMonitor(monitor: MonitorModel) {
     const { id, rtsp } = monitor;
-    const outputDir = path.resolve(`./public/streams/${id}`);
+    const outputDir = path.resolve(`./temp/streams/${id}`);
 
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
