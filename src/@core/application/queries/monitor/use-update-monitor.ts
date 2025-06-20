@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { UpdateMonitorDTO } from "~/@core/domain/dtos/update-monitor-dto";
 import { queryKeys } from "~/@core/infra/constants/query-keys";
 import { updateMonitor } from "../../requests/monitor/update-monitor";
-import { monitorManager } from "~/services/monitor";
 
 export const useUpdateMonitor = () => {
   const queryClient = useQueryClient();
@@ -16,7 +15,9 @@ export const useUpdateMonitor = () => {
         queryClient.invalidateQueries({
           queryKey: [queryKeys.monitor.findMany],
         }),
-        monitorManager.restartMonitor(data),
+        queryClient.invalidateQueries({
+          queryKey: [queryKeys.monitor.find, data.id],
+        }),
       ]);
     },
     onError: () => {

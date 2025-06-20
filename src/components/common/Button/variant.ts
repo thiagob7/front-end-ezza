@@ -11,6 +11,7 @@ export const buttonVariant = tv({
       edit: "bg-blue-200 text-white hover:bg-blue-200/95",
       danger: "bg-red-200 text-white hover:bg-red-200/95",
       white: "bg-white text-gray-950 hover:bg-gray-100",
+      success: "bg-green-600 hover:bg-green-600/90",
     },
   },
   defaultVariants: {

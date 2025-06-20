@@ -6,7 +6,14 @@ interface ButtonProps
   extends ButtonVariantProps,
     ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: React.MouseEventHandler;
-  variant?: "default" | "disabled" | "light" | "white" | "edit" | "danger";
+  variant?:
+    | "default"
+    | "disabled"
+    | "light"
+    | "white"
+    | "edit"
+    | "danger"
+    | "success";
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
