@@ -10,5 +10,9 @@ type Params = {
 export default function MonitorPage() {
   const params = useParams<Params>();
 
-  return <Monitor id={params.id} />;
+  return (
+    <div className="px-2">
+      <Monitor id={params.id} />
+    </div>
+  );
 }
