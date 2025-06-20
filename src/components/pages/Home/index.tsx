@@ -1,42 +1,21 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "~/components/common/Button";
 import { MonitorModel } from "~/modules/monitor/model/monitor-model";
 import CardVideo from "./components/CardVideo";
 import { ModalCreateMonitor } from "./components/CreateMonitorModal";
 
-export default function Home() {
+interface Props {
+  monitors: MonitorModel[];
+}
+
+export default function Home({ monitors }: Props) {
   const [isModalOpen, setModalOpen] = useState(false);
   const { data: session } = useSession();
-  const [monitors, setMonitors] = useState<MonitorModel[]>([]);
 
   const isAuthenticated = session?.user;
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const monitorsResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/monitor`
-        );
-
-        const data = (await monitorsResponse.json()) as MonitorModel[];
-
-        setMonitors(data);
-      } catch {}
-    })();
-  }, []);
-
-  const handleCreateMonitor = async (name: string, rtsp: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/monitor`, {
-      method: "POST",
-      body: JSON.stringify({
-        name,
-        rtsp,
-      }),
-    });
-  };
 
   return (
     <section className="min-h-screen px-2 bg-gradient-to-br">
@@ -60,7 +39,6 @@ export default function Home() {
         <ModalCreateMonitor
           isOpen={isModalOpen}
           onRequestClose={() => setModalOpen(false)}
-          onCreateMonitor={handleCreateMonitor}
         />
       )}
     </section>

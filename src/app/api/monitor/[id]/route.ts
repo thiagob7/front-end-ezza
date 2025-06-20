@@ -20,3 +20,36 @@ export async function GET(
     headers,
   });
 }
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const id = (await params).id;
+  const body = await request.json();
+
+  const monitor = await monitorRepository.update({
+    id,
+    name: body.name,
+    rtsp: body.rtsp,
+  });
+
+  return new Response(JSON.stringify(monitor), {
+    status: 200,
+    headers,
+  });
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const id = (await params).id;
+
+  await monitorRepository.delete(id);
+
+  return new Response(null, {
+    status: 200,
+    headers,
+  });
+}

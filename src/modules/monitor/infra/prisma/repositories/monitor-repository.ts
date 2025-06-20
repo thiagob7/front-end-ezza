@@ -11,6 +11,14 @@ export class MonitorRepository implements IMonitorRepository {
     this.connection = prismaClient.monitor;
   }
 
+  async delete(id: string): Promise<void> {
+    await this.connection.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
   async update({ id, ...data }: IUpdateMonitorDTO): Promise<MonitorModel> {
     const monitor = await this.connection.update({
       where: {

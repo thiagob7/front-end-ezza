@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCreteMonitor } from "~/@core/application/queries/monitor/use-create-monitor";
 import { Button } from "~/components/common/Button";
 import { Input } from "~/components/common/form/Input";
 
@@ -7,23 +8,29 @@ import { Modal } from "~/components/common/Modal";
 interface ModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  onCreateMonitor: (name: string, rtsp: string) => void;
 }
 
-export function ModalCreateMonitor({
-  isOpen,
-  onRequestClose,
-  onCreateMonitor,
-}: ModalProps) {
+export function ModalCreateMonitor({ isOpen, onRequestClose }: ModalProps) {
+  const { mutateAsync, isSuccess, reset } = useCreteMonitor();
+
   const [name, setName] = useState("");
   const [rtsp, setRtsp] = useState("");
 
-  const handleCreate = () => {
-    if (name && rtsp) {
-      onCreateMonitor(name, rtsp);
+  useEffect(() => {
+    if (isSuccess) {
       setName("");
       setRtsp("");
       onRequestClose();
+      reset();
+    }
+  }, [isSuccess, onRequestClose, reset]);
+
+  const handleCreate = async () => {
+    if (name && rtsp) {
+      await mutateAsync({
+        name,
+        rtsp,
+      });
     }
   };
 
