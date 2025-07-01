@@ -31,7 +31,7 @@ echo "🏗 Fazendo build do projeto..."
 yarn build
 
 echo "💾 Executando migrations do Prisma..."
-yarn prisma migrate deploy
+yarn prisma migrate dev
 
 echo "📈 Iniciando processos no PM2..."
 pm2 start yarn --name "app-start" -- start
