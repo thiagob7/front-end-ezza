@@ -25,21 +25,24 @@ export class MonitorManager {
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // prettier-ignore
     const ffmpeg = spawn("ffmpeg", [
-      "-rtsp_transport", "tcp",
-      "-i", rtsp,
-      "-fflags", "nobuffer",
-      "-flags", "low_delay",
-      "-c:v", "copy",
-      "-c:a", "copy",
-      "-f", "hls",
-      "-hls_time", "2",
-      "-hls_list_size", "2",
-      "-hls_flags", "delete_segments+append_list+omit_endlist",
-      "-hls_allow_cache", "0",
+      '-rtsp_transport', 'tcp',
+      '-fflags', 'nobuffer',
+      '-flags', 'low_delay',
+      '-probesize', '32',
+      '-analyzeduration', '0',
+      '-flush_packets', '1',
+      '-i', rtsp,
+      '-c:v', 'copy',
+      '-c:a', 'copy',
+      '-f', 'hls',
+      '-hls_time', '1',
+      '-hls_list_size', '2',
+      '-hls_flags', 'delete_segments+append_list+omit_endlist+split_by_time+program_date_time',
+      '-hls_allow_cache', '0',
       `${outputDir}/index.m3u8`,
     ]);
+
 
     ffmpeg.stderr.on("data", async (data) => {
       const output = data.toString();
