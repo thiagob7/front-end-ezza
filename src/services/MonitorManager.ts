@@ -27,29 +27,17 @@ export class MonitorManager {
 
     // prettier-ignore
     const ffmpeg = spawn("ffmpeg", [
-        // 1) input low-latency
-      '-rtsp_transport', 'tcp',
-      '-fflags', 'nobuffer',
-      '-flags', 'low_delay',
-      '-probesize', '32',
-      '-analyzeduration', '0',
-      '-flush_packets', '1',
-
-      // 2) fonte
-      '-i', rtsp,
-
-      // 3) copy streams (sem recodificação)
-      '-c:v', 'copy',
-      '-c:a', 'copy',
-
-      // 4) HLS low-latency
-      '-f', 'hls',
-      '-hls_time', '2',
-      '-hls_list_size', '2',
-      '-hls_flags', 'delete_segments+append_list+omit_endlist+split_by_time',
-      '-hls_allow_cache', '0',
-
-      // 5) saída
+      "-rtsp_transport", "tcp",
+      "-i", rtsp,
+      "-fflags", "nobuffer",
+      "-flags", "low_delay",
+      "-c:v", "copy",
+      "-c:a", "copy",
+      "-f", "hls",
+      "-hls_time", "2",
+      "-hls_list_size", "2",
+      "-hls_flags", "delete_segments+append_list+omit_endlist",
+      "-hls_allow_cache", "0",
       `${outputDir}/index.m3u8`,
     ]);
 
