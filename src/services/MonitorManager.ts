@@ -27,6 +27,7 @@ export class MonitorManager {
 
     // prettier-ignore
     const ffmpeg = spawn("ffmpeg", [
+      '-re',
       '-rtsp_transport', 'tcp',
       '-fflags', 'nobuffer',
       '-flags', 'low_delay',
