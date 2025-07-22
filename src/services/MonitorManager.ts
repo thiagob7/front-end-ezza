@@ -40,8 +40,8 @@ export class MonitorManager {
       '-f', 'hls',
       '-hls_time', '4',
       '-hls_list_size', '2',
-      '-hls_flags', 'delete_segments+append_list+omit_endlist+split_by_time+program_date_time',
-      '-hls_allow_cache', '0',
+      "-hls_flags", "independent_segments+program_date_time",
+      "-hls_segment_filename", `${outputDir}/seg_%06d.ts`,
       `${outputDir}/index.m3u8`,
     ]);
 
