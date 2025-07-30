@@ -42,3 +42,4 @@ next-env.d.ts
 temp/streams/*
 
 database.db
+database.db*
