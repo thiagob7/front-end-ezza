@@ -59,17 +59,24 @@ export class MonitorManager {
       const output = data.toString();
       console.log(`[FFmpeg ${id}] ${output}`);
       if (output.includes("frame=")) {
-        await this.monitorRepository.update({ id, status: "ONLINE" });
+        try {
+          await this.monitorRepository.update({ id, status: "ONLINE" });
+        } catch {}
       }
     });
 
     ffmpeg.on("close", async () => {
       this.processes.delete(id);
-      await this.monitorRepository.update({ id, status: "CONNECTING" });
+      try {
+        await this.monitorRepository.update({ id, status: "CONNECTING" });
+      } catch {}
     });
 
     this.processes.set(id, ffmpeg);
-    await this.monitorRepository.update({ id, status: "CONNECTING" });
+
+    try {
+      await this.monitorRepository.update({ id, status: "CONNECTING" });
+    } catch {}
   }
 
   stopMonitor(id: string) {
@@ -88,9 +95,10 @@ export class MonitorManager {
 
   async removeMonitor(id: string) {
     this.stopMonitor(id);
-    const dir = path.resolve(`./public/streams/${id}`);
-    if (fs.existsSync(dir)) {
-      fs.rmSync(dir, { recursive: true, force: true });
+    const filePath = path.resolve(process.cwd(), "temp", "streams", id);
+
+    if (fs.existsSync(filePath)) {
+      fs.rmSync(filePath, { recursive: true, force: true });
     }
   }
 }
