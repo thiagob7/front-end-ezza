@@ -10,6 +10,7 @@ import { Button } from "~/components/common/Button";
 import { ModalDeleteMonitor } from "./components/DeleteMonitorModal";
 import { EditModalMonitor } from "./components/EditModalMonitor";
 import { HLSPlayer } from "./components/HLSPlayer";
+import { monitorManager } from "~/services/monitor";
 
 interface MonitorProps {
   id: string;
@@ -43,7 +44,15 @@ export default function Monitor({ id }: MonitorProps) {
   }, [isSuccess, router, reset]);
 
   const handleDelete = () => {
-    deleteMonitor({ id });
+    deleteMonitor(
+      { id },
+      {
+        onSuccess: () => {
+          monitorManager.stopMonitor(id);
+          monitorManager.removeMonitor(id);
+        },
+      }
+    );
   };
 
   if (!monitor?.id) return null;
