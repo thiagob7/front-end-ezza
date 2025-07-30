@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const { id, segment } = await params;
 
-  const filePath = path.resolve(`./temp/streams/${id}/${segment}`);
+  const filePath = path.resolve(process.cwd(), "temp", "streams", id, segment);
 
   if (!fs.existsSync(filePath)) {
     return new NextResponse("Not Found", { status: 404 });

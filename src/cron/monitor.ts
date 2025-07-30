@@ -4,7 +4,7 @@ import { monitorManager } from "~/services/monitor";
 
 import "~/utils/clean-stream";
 
-cron.schedule("*/30 * * * * *", async () => {
+cron.schedule("*/10 * * * * *", async () => {
   try {
     await monitorManager.initialize();
   } catch (err) {

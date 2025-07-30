@@ -27,21 +27,31 @@ export class MonitorManager {
 
     // prettier-ignore
     const ffmpeg = spawn("ffmpeg", [
-      '-re',
       '-rtsp_transport', 'tcp',
-      '-fflags', 'nobuffer',
-      '-flags', 'low_delay',
-      '-probesize', '32',
-      '-analyzeduration', '0',
-      '-flush_packets', '1',
-      '-i', rtsp,
-      '-c:v', 'copy',
-      '-c:a', 'copy',
-      '-f', 'hls',
-      '-hls_time', '4',
-      '-hls_list_size', '2',
-      "-hls_flags", "independent_segments+program_date_time",
-      "-hls_segment_filename", `${outputDir}/seg_%06d.ts`,
+      // '-timeout',      '5000000',   // 5 s
+
+      '-fflags',    'genpts+discardcorrupt',
+      '-use_wallclock_as_timestamps', '1',
+
+      '-probesize',       '10M',
+      '-analyzeduration', '10M',
+      '-flags',           'low_delay',
+      '-max_delay',       '500000',
+
+      // URL de entrada
+      '-i',            rtsp,
+
+      // cópia de stream sem reencodificar
+      '-c:v',          'copy',
+      '-c:a',          'copy',
+
+      // saída HLS
+      '-f',            'hls',
+      '-hls_time',     '2',
+      '-hls_list_size','2',
+      '-hls_allow_cache',  '0', 
+      '-hls_flags',    'delete_segments+independent_segments+program_date_time',
+      '-hls_segment_filename', `${outputDir}/seg_%06d.ts`,
       `${outputDir}/index.m3u8`,
     ]);
 
